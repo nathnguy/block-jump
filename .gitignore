@@ -1,0 +1,6 @@
+__pycache__/
+
+recordings/
+test.py
+
+.DS_Store
