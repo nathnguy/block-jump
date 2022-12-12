@@ -5,9 +5,9 @@ from game import Game
 import numpy as np
 from plot import plot, plot_loss, save
 
-VERSION = "max_obstacle"
+VERSION = "test"
 
-NUM_GAMES = 200
+NUM_GAMES = 500
 
 if __name__ == "__main__":
     game = Game(train=True)

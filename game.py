@@ -1,9 +1,9 @@
 # Block Jump - game ends when the player block hits an obstacle block
+# Press space to jump!
 
 import pygame
 from pygame import Rect
 import random
-import numpy as np
 
 pygame.init()
 
@@ -33,6 +33,12 @@ OBS_WIDTH_MIN = 10
 OBS_WIDTH_MAX = 50
 OBS_HEIGHT_MIN = 40
 OBS_HEIGHT_MAX = 75
+
+# only generate the largest obstacle
+# OBS_WIDTH_MIN = 50
+# OBS_WIDTH_MAX = 50
+# OBS_HEIGHT_MIN = 75
+# OBS_HEIGHT_MAX = 75
 
 NUM_INITIAL_OBS = 5
 OBS_INITIAL_X = 100
@@ -96,8 +102,8 @@ class Game():
 
 
     # returns:
-    #   - game_over: true iff game is over, false other wise
-    #   - reward: 1 living reward, -10
+    #   - game_over: true iff game is over, false otherwise
+    #   - reward: +1 living reward
     def update(self):
         dt = self.clock.tick(FPS) / 1000
 
@@ -116,11 +122,6 @@ class Game():
 
         self.player_y += self.player_velocity_y * dt
 
-        # if self.player_y >= JUMP_HEIGHT:
-        #     self.player_velocity_y = -self.player_velocity_y
-        # elif self.player_y <= 0:
-        #     self.player_velocity_y = 0
-        #     self.player_y = 0
         if self.player_y <= 0:
             self.player_velocity_y = 0
             self.player_y = 0
@@ -150,6 +151,7 @@ class Game():
         return False, 1
 
     
+    # state representation for the game is the entire window
     def grayscale_image(self):
         width = self.window.get_width()
         height = self.window.get_height()
@@ -165,6 +167,7 @@ class Game():
         return [image]
 
 
+    # for letting model select actions
     def move(self, action):
         if action == ACTION_JUMP and self.player_velocity_y == 0:
             # jump

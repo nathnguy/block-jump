@@ -1,3 +1,5 @@
+# for testing trained model
+
 import torch
 from game import Game
 import numpy as np
@@ -30,7 +32,6 @@ def model_test(model_name):
     game = Game(train=True)
     scores = []
 
-    # TODO run games
     with torch.no_grad():
         for i in range(NUM_GAMES):
             game_over = False

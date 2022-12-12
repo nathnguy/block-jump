@@ -2,7 +2,7 @@
 # and remembers state, action, and reward info
 # source: https://www.youtube.com/watch?v=wc-FxNENg9U
 
-from model import LR, BlockNet
+from model import BlockNet
 import numpy as np
 import torch
 
@@ -14,11 +14,11 @@ BATCH_SIZE = 32
 
 MAX_MEM = 100_000
 NUM_ACTIONS = 2
-IMAGE_SIZE = (256, 256)
+IMAGE_SIZE = (1, 256, 256) # CHW
 
 # we decrease epsilon evenly for NUM_GAMES
 # to go from EPSILON to EPSILON_MIN
-NUM_GAMES = 200
+NUM_GAMES = 500
 
 TARGET_UPDATE = 100
 
@@ -32,17 +32,13 @@ class Agent():
         self.model = BlockNet() # online net
         self.model.train()
 
-        # TODO
-        # self.target_net = BlockNet()
-        # self.target_net.load_state_dict(self.model.state_dict())
-        # self.target_net.train()
-
         # replay memory
-        self.state_memory = np.zeros((MAX_MEM, 1, *IMAGE_SIZE), dtype=np.float32)
-        self.new_state_memory = np.zeros((MAX_MEM, 1, *IMAGE_SIZE), dtype=np.float32)
+        self.state_memory = np.zeros((MAX_MEM, *IMAGE_SIZE), dtype=np.float32)
+        self.new_state_memory = np.zeros((MAX_MEM, *IMAGE_SIZE), dtype=np.float32)
         self.action_memory = np.zeros(MAX_MEM, dtype=np.int32)
         self.reward_memory = np.zeros(MAX_MEM, dtype=np.float32)
         self.terminal_memory = np.zeros(MAX_MEM, dtype=np.bool_)
+
 
     def store_transition(self, state, action, reward, state_next, game_over):
         index = self.mem_counter % MAX_MEM
@@ -53,6 +49,7 @@ class Agent():
         self.terminal_memory[index] = game_over
 
         self.mem_counter += 1
+
 
     def choose_action(self, observation):
         if np.random.random() > self.epsilon:
@@ -66,7 +63,8 @@ class Agent():
 
         return action
 
-    # update Q-values
+
+    # update Q-values, replay memory
     def learn(self):
         if self.mem_counter < BATCH_SIZE:
             return
@@ -89,7 +87,6 @@ class Agent():
         # pick Q-value of action specified by action_batch
         q_eval = self.model.forward(state_batch)[batch_index, action_batch]
         q_next = self.model.forward(new_state_batch)
-        # q_next = self.target_net.forward(new_state_batch)
         q_next[terminal_batch] = 0.0
 
         q_target = reward_batch + GAMMA * torch.max(q_next, dim=1)[0]
@@ -98,11 +95,8 @@ class Agent():
         loss.backward()
         self.model.optimizer.step()
 
-        # update target net
-        # if self.mem_counter % TARGET_UPDATE == 0:
-        #     self.target_net.load_state_dict(self.model.state_dict())
-
         return loss.item()
+
 
     # go from 1 to EPSILON_MIN in NUM_GAMES
     def decay_epsilon(self):
