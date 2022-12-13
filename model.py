@@ -3,16 +3,10 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import torch.optim as optim
 import os
 
 # whether or not we try to use MPS acceleration
 USE_MPS = True
-
-# Hyper Parameters
-# 0.001 - no target net
-LR = 0.001
-
 
 class BlockNet(nn.Module):
 
@@ -30,8 +24,8 @@ class BlockNet(nn.Module):
         self.linear1 = nn.Linear(512, 2)
 
         # optimizer and loss for Q-training
-        self.optimizer = optim.Adam(self.parameters(), lr=LR)
-        self.loss = nn.MSELoss()
+        # self.optimizer = optim.Adam(self.parameters(), lr=LR)
+        # self.loss = nn.MSELoss()
 
         # choose device
         self.device = torch.device("mps" if torch.has_mps and USE_MPS else "cpu")

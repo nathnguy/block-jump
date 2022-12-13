@@ -4,6 +4,7 @@ import torch
 from game import Game
 import numpy as np
 from model import BlockNet
+import sys
 
 NUM_GAMES = 500
 
@@ -55,4 +56,7 @@ def model_test(model_name):
 
 
 if __name__ == "__main__":
-    model_test("model.pth")
+    if len(sys.argv) != 2:
+        print("Usage: python test_model.py {filename}")
+    else:
+        model_test(sys.argv[1])
