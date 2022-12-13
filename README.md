@@ -2,7 +2,7 @@
 Nathan Nguyen\
 CSE 490G1 - Deep Learning Autumn '22\
 \
-[VIDEO DEMO](TODO)
+[VIDEO DEMO](https://youtu.be/7h9uSr9QBe0)
 
 ![cover](img/cover.png)
 
@@ -72,7 +72,7 @@ neural network, target network, and game.
 My baseline was a completely random acting agent. For 500 games, this agent averaged a score of 1.634.
 To evaulate my different models, I took the average score from games played by the trained model.\
 \
-See the [demo](TODO) for how these models perform!
+See the [demo](https://youtu.be/7h9uSr9QBe0) for how these models perform!
 
 ### Model 1: Targetless
 - No target network
